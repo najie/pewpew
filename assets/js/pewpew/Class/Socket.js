@@ -23,7 +23,7 @@ function Socket() {
     io.socket.on('updatePlayer', function(datas) {
       console.log("update");
       if(datas) {
-        enemies.receive({uuid: datas.uuid, pos:{x: datas.pos.x, y: datas.pos.y}, rotation: datas.rotation});
+        enemies.receive({uuid: datas.uuid, pos:{x: datas.pos.x, y: datas.pos.y}, rotation: datas.rotation, action: datas.action});
       }
     });
   };

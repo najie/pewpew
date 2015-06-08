@@ -32,7 +32,7 @@ module.exports = {
               }
             });
           }
-          
+
           res.json({id: req.socket.id, type: type});
         });
       }
@@ -98,7 +98,8 @@ module.exports = {
       sails.sockets.broadcast(this.defaultRoom, 'updatePlayer', {
         pos: req.param('pos'),
         rotation: req.param('rotation'),
-        uuid: req.param('uuid')
+        uuid: req.param('uuid'),
+        action: req.param('action')
       }, req.socket);
     }
     res.ok();

@@ -15,6 +15,7 @@ function preload() {
   game.load.image('player-blue', '/images/player-blue.png');
   game.load.image('player-green', '/images/player-green.png');
   game.load.image('player-white', '/images/player-white.png');
+  game.load.image('bullet', '/images/bullet.png');
 
   player.preload();
   enemies.preload();
@@ -27,11 +28,13 @@ function create() {
 
   game.physics.startSystem(Phaser.Physics.ARCADE);
   cursors = game.input.keyboard.createCursorKeys();
+  game.input.keyboard.addKeyCapture([ Phaser.Keyboard.SPACEBAR ]);
 }
 
 function update() {
   if(player.sprite.body)
     player.update(cursors);
+  enemies.update();
 }
 
 function rand(min, max) {
