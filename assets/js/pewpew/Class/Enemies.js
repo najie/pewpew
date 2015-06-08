@@ -4,11 +4,10 @@ function Enemies(game) {
   this.rotation = 0;
 
   this.preload = function() {
-    game.load.image('enemy', '/images/player.png');
   };
 
-  this.add = function(uuid, pos) {
-    var sprite = game.add.sprite(pos.x, pos.y, 'enemy');
+  this.add = function(uuid, pos, type) {
+    var sprite = game.add.sprite(pos.x, pos.y, 'player-'+type);
     sprite.anchor.set(0.5);
     game.physics.enable(sprite, Phaser.Physics.ARCADE);
     this.sprites[uuid] = sprite;

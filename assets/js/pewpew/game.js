@@ -10,20 +10,28 @@ var cursors = {};
 
 function preload() {
   game.load.image('wall-200', '/images/wall-200.png');
+  game.load.image('player-red', '/images/player-red.png');
+  game.load.image('player-yellow', '/images/player-yellow.png');
+  game.load.image('player-blue', '/images/player-blue.png');
+  game.load.image('player-green', '/images/player-green.png');
+  game.load.image('player-white', '/images/player-white.png');
 
   player.preload();
   enemies.preload();
 }
 
 function create() {
-  socket.init();
+  socket.init(function(type) {
+    player.create(type);
+  });
+
   game.physics.startSystem(Phaser.Physics.ARCADE);
   cursors = game.input.keyboard.createCursorKeys();
-  player.create();
 }
 
 function update() {
-  player.update(cursors);
+  if(player.sprite.body)
+    player.update(cursors);
 }
 
 function rand(min, max) {

@@ -12,7 +12,8 @@ module.exports = {
     uuid: 'string',
     posX: 'integer',
     posY: 'integer',
-    rotation: 'integer'
+    rotation: 'integer',
+    type: 'string'
   }
 };
 

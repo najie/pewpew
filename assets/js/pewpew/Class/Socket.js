@@ -2,18 +2,19 @@ function Socket() {
   var apiUrl = "localhost:1337";
   this.lastUpdate = Date.now();
 
-  this.init = function() {
+  this.init = function(cb) {
     var _self = this;
     io.socket.get(apiUrl+'/pewpew/connect', function(response) {
       console.log('Asking your uuid...', response);
       uuid = response.id;
+      cb(response.type);
 
-      _self.join({pos:{x:player.spawnX, y: player.spawnY}});
+      _self.join({pos:{x:player.spawnX, y: player.spawnY}, type: response.type});
     });
 
     io.socket.on('newPlayer', function(datas) {
       console.log('New player', uuid);
-      enemies.add(datas.uuid, datas.pos);
+      enemies.add(datas.uuid, datas.pos, datas.type);
     });
     io.socket.on('leavePlayer', function(datas) {
       console.log("A player leave the game");
@@ -35,7 +36,7 @@ function Socket() {
         if(response.players) {
           response.players.forEach(function(player, index) {
             console.log(player);
-            enemies.add(player.uuid, player.pos);
+            enemies.add(player.uuid, player.pos, player.type);
           });
         }
       }

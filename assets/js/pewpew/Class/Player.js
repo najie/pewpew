@@ -6,11 +6,10 @@ function Player(game) {
   this.spawnY = rand(10, 100);
 
   this.preload = function() {
-    game.load.image('player', '/images/player.png');
   };
 
-  this.create = function() {
-    this.sprite = game.add.sprite(this.spawnX, this.spawnY, 'player');
+  this.create = function(type) {
+    this.sprite = game.add.sprite(this.spawnX, this.spawnY, 'player-'+type);
     this.sprite.anchor.set(0.5);
     game.physics.enable(this.sprite, Phaser.Physics.ARCADE);
     this.sprite.body.rotation = 0;
