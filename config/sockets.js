@@ -126,7 +126,7 @@ module.exports.sockets = {
      // By default: do nothing.
     console.log("A player leave the room", socket.id);
 
-    Pewpew.destroy({playerId: socket.id}).exec(function(err, pewpew) {
+    Pewpew.destroy({uuid: socket.id}).exec(function(err, pewpew) {
       console.log("Destroy player", err, pewpew);
       if(pewpew[0]) {
         sails.sockets.broadcast(pewpew[0].roomId, 'leavePlayer', {uuid: socket.id}, socket.id);

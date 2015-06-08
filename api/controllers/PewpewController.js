@@ -28,9 +28,10 @@ module.exports = {
 
         Pewpew.create({
           roomId: _self.defaultRoom,
-          playerId: req.param('uuid'),
-          spawnX: req.param('pos').x,
-          spawnY: req.param('pos').y
+          uuid: req.param('uuid'),
+          posX: req.param('pos').x,
+          posY: req.param('pos').y,
+          rotation: 0
         }).exec(function(err, pewpew) {
           console.log("create a pew", pewpew);
           if(err) {
@@ -61,12 +62,15 @@ module.exports = {
   },
   updatePlayer: function(req, res) {
     if(req.isSocket) {
-      sails.sockets.broadcast(this.defaultRoom, 'updatePlayer', {
+      Action.findOrCreate({uuid: req.param('uuid')}, {
+        roomId: 'room-1',
         uuid: req.param('uuid'),
-        pos: req.param('pos'),
+        posX: req.param('pos').x,
+        posY: req.param('pos').y,
         rotation: req.param('rotation')
-      }, req.socket);
+      }).exec(function(err, player) {
 
+      });
       res.ok();
     }
   },

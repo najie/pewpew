@@ -22,9 +22,14 @@ function Socket() {
       enemies.destroy(datas.uuid);
     });
     io.socket.on('updatePlayer', function(datas) {
-      console.log('update');
-      if(datas.uuid !== uuid)
-        enemies.receive(datas);
+      console.log("update");
+      if(datas) {
+        datas.forEach(function(player, index) {
+          if(player.uuid !== uuid) {
+            enemies.receive({uuid: player.playerId, pos:{x: player.posX, y: player.posY}, rotation: player.rotation});
+          }
+        })
+      }
     });
   };
 
@@ -44,7 +49,7 @@ function Socket() {
 
   this.emit = function(datas) {
     datas.uuid = uuid;
-    if(Date.now() - this.lastUpdate > 25) {
+    if(Date.now() - this.lastUpdate > 15) {
       this.lastUpdate = Date.now();
       io.socket.post(apiUrl+"/pewpew/updatePlayer", datas, function() {
 
