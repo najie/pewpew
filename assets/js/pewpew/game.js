@@ -28,7 +28,7 @@ function create() {
 
   game.physics.startSystem(Phaser.Physics.ARCADE);
   cursors = game.input.keyboard.createCursorKeys();
-  game.input.keyboard.addKeyCapture([ Phaser.Keyboard.SPACEBAR ]);
+  game.input.keyboard.addKeyCapture([ Phaser.Keyboard.SPACEBAR, Phaser.Keyboard.SHIFT ]);
 }
 
 function update() {

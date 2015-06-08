@@ -21,10 +21,35 @@ function Socket() {
       enemies.destroy(datas.uuid);
     });
     io.socket.on('updatePlayer', function(datas) {
-      console.log("update");
+      console.log("Action receive", datas);
       if(datas) {
-        console.log('datas uuid', datas.uuid, datas.action);
-        enemies.receive({uuid: datas.uuid, pos:{x: datas.pos.x, y: datas.pos.y}, rotation: datas.rotation, action: datas.action});
+        switch(datas.action) {
+          case 'move':
+            enemies.move({
+              uuid: datas.uuid,
+              pos:{x: datas.pos.x, y: datas.pos.y},
+              rotation: datas.rotation
+            });
+            break;
+          case 'fire':
+            enemies.move({
+              uuid: datas.uuid,
+              pos:{x: datas.pos.x, y: datas.pos.y},
+              rotation: datas.rotation
+            });
+            enemies.fire(datas.uuid);
+            break;
+          case 'hit':
+            if(datas.target !== uuid)
+              enemies.hit(datas.target);
+            else {
+              player.hit();
+            }
+            break;
+          case 'death':
+            console.log('SOMEONE DIED');
+            enemies.destroy(datas.uuid);
+        }
       }
     });
   };

@@ -99,13 +99,31 @@ module.exports = {
     var _self = this;
     if(req.isSocket) {
       this.actions.push({id: req.socket.id});
-
-      sails.sockets.broadcast(this.defaultRoom, 'updatePlayer', {
-        pos: req.param('pos'),
-        rotation: req.param('rotation'),
-        uuid: req.socket.id,
-        action: req.param('action')
-      }, req.socket);
+      switch(req.param('action')) {
+        case 'move':
+        case 'fire':
+          sails.sockets.broadcast(this.defaultRoom, 'updatePlayer', {
+            pos: req.param('pos'),
+            rotation: req.param('rotation'),
+            uuid: req.socket.id,
+            action: req.param('action')
+          }, req.socket);
+          break;
+        case 'hit':
+          sails.sockets.broadcast(this.defaultRoom, 'updatePlayer', {
+            target: req.param('target'),
+            uuid: req.socket.id,
+            action: req.param('action')
+          }, req.socket);
+          break;
+        case 'death':
+          sails.sockets.broadcast(this.defaultRoom, 'updatePlayer', {
+            target: req.param('target'),
+            uuid: req.socket.id,
+            action: req.param('action')
+          }, req.socket);
+          break;
+      }
     }
     res.ok();
   },

@@ -1,6 +1,7 @@
 function Enemies(game) {
 
   this.sprites = [];
+  this.uuids = [];
   this.bullets = [];
   this.rotation = 0;
   this.doUpdate = false;
@@ -10,8 +11,11 @@ function Enemies(game) {
   };
 
   this.add = function(uuid, pos, type) {
+    this.uuids.push(uuid);
+
     var sprite = game.add.sprite(pos.x, pos.y, 'player-'+type);
     sprite.anchor.set(0.5);
+    sprite.health = 10;
     game.physics.enable(sprite, Phaser.Physics.ARCADE);
     this.sprites[uuid] = sprite;
 
@@ -37,17 +41,12 @@ function Enemies(game) {
   this.update = function() {
   };
 
-  this.receive = function(datas) {
+  this.move = function(datas) {
     if(this.sprites[datas.uuid]) {
       console.log("Enemy found... update", datas);
       this.sprites[datas.uuid].x = datas.pos.x;
       this.sprites[datas.uuid].y = datas.pos.y;
       this.sprites[datas.uuid].angle = datas.rotation;
-      if(datas.action == 'fire') {
-        console.log("fire");
-        this.fire(datas.uuid);
-        //this.doUpdate = {action: 'fire', uuid: datas.uuid};
-      }
     }
   };
 
@@ -65,5 +64,9 @@ function Enemies(game) {
         this.bulletTime = game.time.now + 100;
       }
     }
+  };
+
+  this.hit = function(target) {
+    this.sprites[target].health--;
   };
 }

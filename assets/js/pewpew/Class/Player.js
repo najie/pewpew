@@ -14,6 +14,7 @@ function Player(game) {
   this.create = function(type) {
     this.sprite = game.add.sprite(this.spawnX, this.spawnY, 'player-'+type);
     this.sprite.anchor.set(0.5);
+    this.sprite.health = 10;
     game.physics.enable(this.sprite, Phaser.Physics.ARCADE);
     this.sprite.body.rotation = 0;
     this.sprite.body.collideWorldBounds = true;
@@ -30,9 +31,11 @@ function Player(game) {
   };
 
   this.update = function(cursors) {
-    var speed = 200;
-    var doEmit = false;
-    var action = null;
+    var speed = 200,
+        angularVelocity = 300,
+        doEmit = false,
+        action = null,
+        _self = this;
 
     this.sprite.body.velocity.x = 0;
     this.sprite.body.velocity.y = 0;
@@ -40,28 +43,41 @@ function Player(game) {
 
     this.sprite.bringToTop();
 
+    if(game.input.keyboard.isDown(Phaser.Keyboard.SHIFT)) {
+      angularVelocity = 100;
+    }
+
     if(cursors.up.isDown) {
-      action = "moveForward";
+      action = "move";
       game.physics.arcade.velocityFromAngle(this.sprite.body.rotation, speed, this.sprite.body.velocity);
       //this.sprite.body.y -= velocity;
     }
     else if(cursors.down.isDown) {
-      action = "moveBackward";
+      action = "move";
       game.physics.arcade.velocityFromAngle(this.sprite.body.rotation, -(speed-100), this.sprite.body.velocity);
     }
 
     if(cursors.left.isDown) {
-      action = "turnLeft";
-      this.sprite.body.angularVelocity = -300;
+      action = "move";
+      this.sprite.body.angularVelocity = -angularVelocity;
     }
     else if(cursors.right.isDown) {
-      action = "turnRight";
-      this.sprite.body.angularVelocity = 300;
+      action = "move";
+      this.sprite.body.angularVelocity = angularVelocity;
     }
 
     if (game.input.keyboard.isDown(Phaser.Keyboard.SPACEBAR)) {
       this.fire();
     }
+
+    enemies.uuids.forEach(function(uuid, index) {
+      game.physics.arcade.overlap(_self.bullets, enemies.sprites[uuid], function(enemy, bullet) {
+        console.log("collide");
+        socket.emit({target: uuid, action: 'hit'});
+        bullet.kill();
+      }, null, _self);
+    });
+
 
     if(action) {
       socket.emit({pos: {x: this.sprite.x, y: this.sprite.y}, rotation: this.sprite.angle, action: action});
@@ -85,4 +101,13 @@ function Player(game) {
       }
     }
   };
+
+  this.hit = function() {
+    this.sprite.health--;
+    console.log("You get hit !", this.sprite.health);
+    if(this.sprite.health <= 0) {
+      this.sprite.kill();
+      socket.emit({action: 'death'});
+    }
+  }
 }
