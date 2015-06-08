@@ -14,14 +14,9 @@ function Enemies(game) {
     game.physics.enable(this.sprite, Phaser.Physics.ARCADE);
   };
 
-  this.destroy = function(id) {
-
-  };
-
-  this.update = function() {
-    if(this.sprite) {
-      this.sprite.body.rotation = this.get();
-    }
+  this.destroy = function(uuid) {
+    if(this.sprite)
+      this.sprite.kill();
   };
 
   this.receive = function(datas) {
@@ -29,16 +24,8 @@ function Enemies(game) {
       this.sprite.x = datas.pos.x;
       this.sprite.y = datas.pos.y;
       if(this.sprite.body) {
-        console.log(datas.rotation);
-        this.set(datas.rotation);
+        this.sprite.angle = datas.rotation;
       }
     }
   };
-
-  this.set = function(rotation) {
-    this.rotation = rotation;
-  };
-  this.get = function() {
-    return this.rotation;
-  }
 }

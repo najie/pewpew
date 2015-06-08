@@ -1,8 +1,7 @@
 var uuid = null;
-var game = new Phaser.Game(800, 600, Phaser.AUTO, '', { preload: preload, create: create, update: update });
+var game = new Phaser.Game(400, 200, Phaser.AUTO, '', { preload: preload, create: create, update: update });
 
 var socket = new Socket();
-socket.init();
 
 var player = new Player(game);
 var enemies = new Enemies(game);
@@ -17,6 +16,7 @@ function preload() {
 }
 
 function create() {
+  socket.init();
   game.physics.startSystem(Phaser.Physics.ARCADE);
   cursors = game.input.keyboard.createCursorKeys();
   player.create();
@@ -24,7 +24,6 @@ function create() {
 
 function update() {
   player.update(cursors);
-  enemies.update();
 }
 
 function rand(min, max) {

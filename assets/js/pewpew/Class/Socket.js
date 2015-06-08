@@ -18,6 +18,7 @@ function Socket() {
       }
     });
     io.socket.on('leavePlayer', function(datas) {
+      console.log("A player leave the game");
       enemies.destroy(datas.uuid);
     });
     io.socket.on('updatePlayer', function(datas) {
@@ -31,7 +32,12 @@ function Socket() {
     datas.uuid = uuid;
     io.socket.post(apiUrl+"/pewpew/join", datas, function(response) {
       if(response.status == 'connected') {
-        console.log("You join the room !");
+        console.log("You join the room !", response);
+        if(response.players) {
+          response.players.forEach(function(player, index) {
+            enemies.add(player.uuid, player.pos);
+          });
+        }
       }
     });
   };

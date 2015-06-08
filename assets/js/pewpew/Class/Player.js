@@ -2,13 +2,11 @@ function Player(game) {
 
   this.cursors = null;
   this.sprite = {};
-  this.spawnX = rand(100, 700);
-  this.spawnY = rand(100, 500);
+  this.spawnX = rand(10, 300);
+  this.spawnY = rand(10, 100);
 
   this.preload = function() {
     game.load.image('player', '/images/player.png');
-    this.spawnX = rand(100, 700);
-    this.spawnY = rand(100, 500);
   };
 
   this.create = function() {
@@ -16,6 +14,7 @@ function Player(game) {
     this.sprite.anchor.set(0.5);
     game.physics.enable(this.sprite, Phaser.Physics.ARCADE);
     this.sprite.body.rotation = 0;
+    this.sprite.body.collideWorldBounds = true;
   };
 
   this.update = function(cursors) {
@@ -46,7 +45,7 @@ function Player(game) {
     }
 
     if(doEmit) {
-      socket.emit({pos: {x: this.sprite.body.x, y: this.sprite.body.y}, rotation: this.sprite.body.rotation});
+      socket.emit({pos: {x: this.sprite.x, y: this.sprite.y}, rotation: this.sprite.angle});
     }
   };
 

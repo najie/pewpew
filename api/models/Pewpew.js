@@ -8,7 +8,10 @@
 module.exports = {
 
   attributes: {
-
+    roomId: 'string',
+    playerId: 'string',
+    spawnX: 'integer',
+    spawnY: 'integer'
   }
 };
 
