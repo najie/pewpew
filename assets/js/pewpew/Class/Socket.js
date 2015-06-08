@@ -12,10 +12,8 @@ function Socket() {
     });
 
     io.socket.on('newPlayer', function(datas) {
-      if(datas.uuid !== uuid) {
-        console.log('Nouveau joueur');
-        enemies.add(datas.uuid, datas.pos);
-      }
+      console.log('New player', uuid);
+      enemies.add(datas.uuid, datas.pos);
     });
     io.socket.on('leavePlayer', function(datas) {
       console.log("A player leave the game");
@@ -24,11 +22,7 @@ function Socket() {
     io.socket.on('updatePlayer', function(datas) {
       console.log("update");
       if(datas) {
-        datas.forEach(function(player, index) {
-          if(player.uuid !== uuid) {
-            enemies.receive({uuid: player.playerId, pos:{x: player.posX, y: player.posY}, rotation: player.rotation});
-          }
-        })
+        enemies.receive({uuid: datas.uuid, pos:{x: datas.pos.x, y: datas.pos.y}, rotation: datas.rotation});
       }
     });
   };
@@ -40,6 +34,7 @@ function Socket() {
         console.log("You join the room !", response);
         if(response.players) {
           response.players.forEach(function(player, index) {
+            console.log(player);
             enemies.add(player.uuid, player.pos);
           });
         }
@@ -49,11 +44,9 @@ function Socket() {
 
   this.emit = function(datas) {
     datas.uuid = uuid;
-    if(Date.now() - this.lastUpdate > 15) {
+    if(Date.now() - this.lastUpdate > 30) {
       this.lastUpdate = Date.now();
-      io.socket.post(apiUrl+"/pewpew/updatePlayer", datas, function() {
-
-      });
+      io.socket.post(apiUrl+"/pewpew/updatePlayer", datas, function() {});
     }
   };
 
