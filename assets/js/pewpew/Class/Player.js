@@ -60,7 +60,6 @@ function Player(game) {
     }
 
     if (game.input.keyboard.isDown(Phaser.Keyboard.SPACEBAR)) {
-      action = "fire";
       this.fire();
     }
 
@@ -81,6 +80,8 @@ function Player(game) {
         bullet.rotation = this.sprite.rotation;
         game.physics.arcade.velocityFromRotation(this.sprite.rotation, 400, bullet.body.velocity);
         this.bulletTime = game.time.now + 100;
+
+        socket.emit({pos: {x: this.sprite.x, y: this.sprite.y}, rotation: this.sprite.angle, action: 'fire'});
       }
     }
   };

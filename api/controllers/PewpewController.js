@@ -50,7 +50,11 @@ module.exports = {
       }
       else {
         sails.sockets.join(req.socket, this.defaultRoom);
-        sails.sockets.broadcast(this.defaultRoom, 'newPlayer', {uuid: req.param('uuid'), pos: req.param('pos'), type: req.param('type')}, req.socket);
+        sails.sockets.broadcast(this.defaultRoom, 'newPlayer', {
+          uuid: req.param('uuid'),
+          pos: req.param('pos'),
+          type: req.param('type')
+        }, req.socket);
 
         Pewpew.find({roomId: this.defaultRoom}).exec(function(err, players) {
           var i = 0,
@@ -95,10 +99,11 @@ module.exports = {
     var _self = this;
     if(req.isSocket) {
       this.actions.push({id: req.socket.id});
+
       sails.sockets.broadcast(this.defaultRoom, 'updatePlayer', {
         pos: req.param('pos'),
         rotation: req.param('rotation'),
-        uuid: req.param('uuid'),
+        uuid: req.socket.id,
         action: req.param('action')
       }, req.socket);
     }

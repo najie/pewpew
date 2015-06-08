@@ -22,8 +22,8 @@ function Enemies(game) {
     bullets.createMultiple(50, 'bullet');
     bullets.setAll('anchor.x', 0.5);
     bullets.setAll('anchor.y', 0.5);
-    console.log(uuid);
     this.bullets[uuid] = bullets;
+    console.log("bullets", this.bullets);
   };
 
   this.destroy = function(uuid) {
@@ -31,13 +31,10 @@ function Enemies(game) {
       this.sprites[uuid].kill();
 
     if(this.bullets[uuid])
-      this.bullets[uuid].destroy();
+      delete this.bullets[uuid];
   };
 
   this.update = function() {
-      if(this.doUpdate.action == 'fire') {
-        this.fire(this.doUpdate.uuid);
-      }
   };
 
   this.receive = function(datas) {
@@ -48,27 +45,24 @@ function Enemies(game) {
       this.sprites[datas.uuid].angle = datas.rotation;
       if(datas.action == 'fire') {
         console.log("fire");
-        this.doUpdate = {action: 'fire', uuid: uuid};
+        this.fire(datas.uuid);
+        //this.doUpdate = {action: 'fire', uuid: datas.uuid};
       }
     }
   };
 
   this.fire = function(uuid) {
     if (game.time.now > this.bulletTime) {
-      console.log(this.bullets, uuid);
       var bullet = this.bullets[uuid].getFirstExists(false),
           bulletLifespan = 2000,
           _self = this;
 
       if (bullet) {
-        bullet.reset(this.sprite.body.x + 12, this.sprite.body.y + 12);
+        bullet.reset(this.sprites[uuid].body.x + 12, this.sprites[uuid].body.y + 12);
         bullet.lifespan = bulletLifespan;
-        bullet.rotation = this.sprite.rotation;
-        game.physics.arcade.velocityFromRotation(this.sprite.rotation, 400, bullet.body.velocity);
+        bullet.rotation = this.sprites[uuid].rotation;
+        game.physics.arcade.velocityFromRotation(this.sprites[uuid].rotation, 400, bullet.body.velocity);
         this.bulletTime = game.time.now + 100;
-        setTimeout(function() {
-          _self.doUpdate = null;
-        }, bulletLifespan);
       }
     }
   };
