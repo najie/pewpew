@@ -2,8 +2,6 @@ function Player(game) {
 
   this.cursors = null;
   this.sprite = {};
-  this.spawnX = rand(10, 300);
-  this.spawnY = rand(10, 100);
 
   this.bullets = null;
   this.bulletTime = 0;
@@ -11,6 +9,9 @@ function Player(game) {
   this.mainDatas = {};
 
   this.preload = function() {
+    var spawnId = rand(1, map.selectedMap.spawnsCoords.length);
+    this.spawnX = map.selectedMap.spawnsCoords[spawnId-1][0]+50;
+    this.spawnY = map.selectedMap.spawnsCoords[spawnId-1][1]+50;
   };
 
   this.create = function(type) {

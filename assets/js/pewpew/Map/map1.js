@@ -2,7 +2,10 @@
  * Created by jeremylaurain on 10/06/15.
  */
 maps['map1'] = {
-  sprites : [],
+  walls : [],
+  spawnsCoords : [
+    [600,50], [650, 250], [50,150]
+  ],
   preload: function() {
     console.log('preload map1');
     game.load.image('wall-100-h', '/images/wall-100-h.jpg');
@@ -13,6 +16,9 @@ maps['map1'] = {
   create: function() {
     game.stage.setBackgroundColor('#808C86');
     var walls = game.add.group();
+    var spawns = game.add.group();
+    spawns.enableBody = true;
+    spawns.physicsBodyType = Phaser.Physics.ARCADE;
     walls.enableBody = true;
     walls.physicsBodyType = Phaser.Physics.ARCADE;
 
@@ -27,24 +33,29 @@ maps['map1'] = {
     walls.create(400, 150, 'wall-100-h');
     walls.create(400, 250, 'wall-100-h');
 
-    walls.create(600, 50, 'spawn-100');
-    walls.create(650, 250, 'spawn-100');
-    walls.create(50, 150, 'spawn-100');
+    spawns.create(this.spawnsCoords[0][0], this.spawnsCoords[0][1], 'spawn-100');
+    spawns.create(this.spawnsCoords[1][0], this.spawnsCoords[1][1], 'spawn-100');
+    spawns.create(this.spawnsCoords[2][0], this.spawnsCoords[2][1], 'spawn-100');
 
     walls.setAll('body.immovable', true);
-    this.sprites = walls;
-
-    /*this.sprite = game.add.sprite(200, 0, 'wall-100-v');
-    this.sprite.body.immovable = true;*/
+    spawns.setAll('body.immovable', true);
+    this.walls = walls;
+    this.spawns = spawns;
   },
   update: function() {
     var _self = this;
-    game.physics.arcade.collide(player.sprite, this.sprites);
-    game.physics.arcade.collide(player.bullets, this.sprites, function(bullet, wall) {
+    game.physics.arcade.collide(player.sprite, this.walls);
+    game.physics.arcade.collide(player.sprite, this.spawns);
+    game.physics.arcade.collide(player.bullets, this.walls, function(bullet, wall) {
       bullet.kill();
     });
+
+    game.physics.arcade.overlap(player.bullets, this.spawns, function(bullet, wall) {
+      bullet.kill();
+    });
+
     enemies.uuids.forEach(function(uuid, index) {
-      game.physics.arcade.collide(enemies.bullets[uuid], _self.sprites, function(bullet, wall) {
+      game.physics.arcade.collide(enemies.bullets[uuid], _self.walls, function(bullet, wall) {
         bullet.kill();
       });
     });
