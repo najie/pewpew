@@ -1,5 +1,7 @@
 function Socket() {
-  var apiUrl = "localhost:1337";
+  var apiUrl = "localhost:1337",
+      latency = 30;
+
   this.lastUpdate = Date.now();
 
   this.init = function(cb) {
@@ -22,34 +24,36 @@ function Socket() {
     });
     io.socket.on('updatePlayer', function(datas) {
       console.log("Action receive", datas);
-      if(datas) {
-        switch(datas.action) {
-          case 'move':
-            enemies.move({
-              uuid: datas.uuid,
-              pos:{x: datas.pos.x, y: datas.pos.y},
-              rotation: datas.rotation
-            });
-            break;
-          case 'fire':
-            enemies.move({
-              uuid: datas.uuid,
-              pos:{x: datas.pos.x, y: datas.pos.y},
-              rotation: datas.rotation
-            });
-            enemies.fire(datas.uuid);
-            break;
-          case 'hit':
-            if(datas.target !== uuid)
-              enemies.hit(datas.target);
-            else {
-              player.hit();
-            }
-            break;
-          case 'death':
-            console.log('SOMEONE DIED');
-            enemies.destroy(datas.uuid);
-        }
+      if(datas.pInfos && datas.pInfos.health) {
+        HUD.updatePlayer(datas);
+      }
+      switch(datas.action) {
+        case 'move':
+          enemies.move({
+            uuid: datas.uuid,
+            pos:{x: datas.pInfos.pos.x, y: datas.pInfos.pos.y},
+            rotation: datas.pInfos.rotation,
+            health: datas.pInfos.health
+          });
+          break;
+        case 'fire':
+          enemies.move({
+            uuid: datas.uuid,
+            pos:{x: datas.pInfos.pos.x, y: datas.pInfos.pos.y},
+            rotation: datas.pInfos.rotation
+          });
+          enemies.fire(datas.uuid);
+          break;
+        case 'hit':
+          if(datas.pInfos.target !== uuid)
+            enemies.hit(datas.target);
+          else {
+            player.hit();
+          }
+          break;
+        case 'death':
+          console.log('SOMEONE DIED');
+          enemies.destroy(datas.uuid);
       }
     });
   };
@@ -71,9 +75,11 @@ function Socket() {
 
   this.emit = function(datas) {
     datas.uuid = uuid;
-    if(Date.now() - this.lastUpdate > 30) {
+    if(Date.now() - this.lastUpdate > latency) {
       this.lastUpdate = Date.now();
-      io.socket.post(apiUrl+"/pewpew/updatePlayer", datas, function() {});
+      io.socket.post(apiUrl+"/pewpew/updatePlayer", datas, function(response) {
+
+      });
     }
   };
 

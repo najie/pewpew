@@ -77,7 +77,7 @@ module.exports = {
           if(players) {
             players.forEach(function(player, index) {
               i++;
-              playersPos.push({uuid: player.uuid, pos:{x: player.spawnX, y: player.spawnY}, type: player.type});
+              playersPos.push({uuid: player.uuid, pos:{x: player.posX, y: player.posY}, type: player.type});
 
               if(i == players.length || players.length == 0) {
                 res.json({status: 'connected', players:playersPos});
@@ -96,31 +96,33 @@ module.exports = {
     }
   },
   updatePlayer: function(req, res) {
-    var _self = this;
+    var _self = this,
+        datas = req.param('datas'),
+        action = req.param('action'),
+        uuid = req.param('uuid');
+
     if(req.isSocket) {
       this.actions.push({id: req.socket.id});
-      switch(req.param('action')) {
+      switch(action) {
         case 'move':
         case 'fire':
           sails.sockets.broadcast(this.defaultRoom, 'updatePlayer', {
-            pos: req.param('pos'),
-            rotation: req.param('rotation'),
+            pInfos: datas,
             uuid: req.socket.id,
-            action: req.param('action')
+            action: action
           }, req.socket);
           break;
         case 'hit':
           sails.sockets.broadcast(this.defaultRoom, 'updatePlayer', {
-            target: req.param('target'),
+            pInfos: datas,
             uuid: req.socket.id,
-            action: req.param('action')
+            action: action
           }, req.socket);
           break;
         case 'death':
           sails.sockets.broadcast(this.defaultRoom, 'updatePlayer', {
-            target: req.param('target'),
             uuid: req.socket.id,
-            action: req.param('action')
+            action: action
           }, req.socket);
           break;
       }

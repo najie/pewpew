@@ -1,0 +1,35 @@
+body {
+  font-family: "Raleway", Helvetica, Arial, sans-serif;
+}
+li,
+ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+#pewpew {
+  float: left;
+}
+#hud {
+  float: left;
+  border: 1px solid #607D8B;
+  height: 398px;
+}
+#hud #me {
+  font-size: 50px;
+  padding: 10px;
+  background-color: #607D8B;
+  color: white;
+  width: 200px;
+}
+#hud #players {
+  padding: 10px;
+}
+#hud #players .health {
+  position: relative;
+  margin-left: 10px;
+  top: -6px;
+}
+#hud #players li {
+  margin: 10px 0;
+}

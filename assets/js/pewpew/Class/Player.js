@@ -8,6 +8,8 @@ function Player(game) {
   this.bullets = null;
   this.bulletTime = 0;
 
+  this.mainDatas = {};
+
   this.preload = function() {
   };
 
@@ -15,7 +17,8 @@ function Player(game) {
     this.sprite = game.add.sprite(this.spawnX, this.spawnY, 'player-'+type);
     this.sprite.anchor.set(0.5);
     this.sprite.health = 10;
-    $('.health .value').html(10);
+    $('#me .health .value').html(this.sprite.health);
+
     game.physics.enable(this.sprite, Phaser.Physics.ARCADE);
     this.sprite.body.rotation = 0;
     this.sprite.body.collideWorldBounds = true;
@@ -37,6 +40,15 @@ function Player(game) {
         doEmit = false,
         action = null,
         _self = this;
+
+    this.mainDatas = {
+      pos: {
+        x: this.sprite.x,
+        y: this.sprite.y
+      },
+      rotation: this.sprite.angle,
+      health: this.sprite.health
+    };
 
     this.sprite.body.velocity.x = 0;
     this.sprite.body.velocity.y = 0;
@@ -72,17 +84,17 @@ function Player(game) {
     }
 
     enemies.uuids.forEach(function(uuid, index) {
-      game.physics.arcade.overlap(_self.bullets, enemies.sprites[uuid], function(enemy, bullet) {
-        console.log("collide");
-        socket.emit({target: uuid, action: 'hit'});
-        bullet.kill();
-      }, null, _self);
+      game.physics.arcade.overlap(_self.bullets, enemies.sprites[uuid], _self.onHitEnemy, null, _self);
     });
 
-
     if(action) {
-      socket.emit({pos: {x: this.sprite.x, y: this.sprite.y}, rotation: this.sprite.angle, action: action});
+      socket.emit({datas: this.mainDatas, action: action});
     }
+  };
+
+  this.onHitEnemy = function(enemy, bullet) {
+    socket.emit({datas:{target: enemy.uuid}, action: 'hit'});
+    bullet.kill();
   };
 
   this.fire = function() {
@@ -98,7 +110,7 @@ function Player(game) {
         game.physics.arcade.velocityFromRotation(this.sprite.rotation, 400, bullet.body.velocity);
         this.bulletTime = game.time.now + 100;
 
-        socket.emit({pos: {x: this.sprite.x, y: this.sprite.y}, rotation: this.sprite.angle, action: 'fire'});
+        socket.emit({datas: this.mainDatas, action: 'fire'});
       }
     }
   };
@@ -106,7 +118,7 @@ function Player(game) {
   this.hit = function() {
     if(this.sprite.health > 0) {
       this.sprite.health--;
-      $('.health .value').html(this.sprite.health);
+      $('#me .health .value').html(this.sprite.health);
       console.log("You get hit !", this.sprite.health);
     }
 

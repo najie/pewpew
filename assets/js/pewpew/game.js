@@ -1,12 +1,12 @@
 var uuid = null;
-var game = new Phaser.Game(800, 400, Phaser.AUTO, '', { preload: preload, create: create, update: update });
+var game = new Phaser.Game(800, 400, Phaser.AUTO, 'pewpew', { preload: preload, create: create, update: update });
 
-var socket = new Socket();
+var socket = new Socket(),
+    player = new Player(game),
+    enemies = new Enemies(game),
+    map = new Map(),
+    HUD = new HUD();
 
-var player = new Player(game);
-var enemies = new Enemies(game);
-
-var map = new Map();
 map.load('map1');
 
 var cursors = {};
