@@ -67,7 +67,7 @@ function Player(game) {
       this.sprite.body.angularVelocity = angularVelocity;
     }
 
-    if (game.input.keyboard.isDown(Phaser.Keyboard.SPACEBAR)) {
+    if (game.input.keyboard.isDown(Phaser.Keyboard.SPACEBAR) && this.sprite.health > 0) {
       this.fire();
     }
 
