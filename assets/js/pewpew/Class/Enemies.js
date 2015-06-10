@@ -27,7 +27,6 @@ function Enemies(game) {
     bullets.setAll('anchor.x', 0.5);
     bullets.setAll('anchor.y', 0.5);
     this.bullets[uuid] = bullets;
-    console.log("bullets", this.bullets);
   };
 
   this.destroy = function(uuid) {

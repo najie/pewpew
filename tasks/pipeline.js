@@ -27,11 +27,11 @@ var jsFilesToInject = [
   'js/dependencies/sails.io.js',
 
   // Dependencies like jQuery, or Angular are brought in here
-  'js/dependencies/**/*.js',
+  'js/dependencies/*.js',
 
-  // All of the rest of your client-side js files
-  // will be injected here in no particular order.
+  // Pewpew JS injection
   'js/pewpew/Class/*.js',
+  'js/pewpew/Map/*.js',
   'js/pewpew/game.js'
 ];
 

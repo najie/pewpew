@@ -15,6 +15,7 @@ function Player(game) {
     this.sprite = game.add.sprite(this.spawnX, this.spawnY, 'player-'+type);
     this.sprite.anchor.set(0.5);
     this.sprite.health = 10;
+    $('.health .value').html(10);
     game.physics.enable(this.sprite, Phaser.Physics.ARCADE);
     this.sprite.body.rotation = 0;
     this.sprite.body.collideWorldBounds = true;
@@ -103,9 +104,13 @@ function Player(game) {
   };
 
   this.hit = function() {
-    this.sprite.health--;
-    console.log("You get hit !", this.sprite.health);
-    if(this.sprite.health <= 0) {
+    if(this.sprite.health > 0) {
+      this.sprite.health--;
+      $('.health .value').html(this.sprite.health);
+      console.log("You get hit !", this.sprite.health);
+    }
+
+    if(this.sprite.health == 0) {
       this.sprite.kill();
       socket.emit({action: 'death'});
     }
