@@ -6,6 +6,13 @@ maps['map1'] = {
   spawnsCoords : [
     [600,50], [650, 250], [50,150]
   ],
+  bonusSpawns: [
+    [280, 193],
+    [440, 193],
+    [90, 30],
+    [760, 360]
+  ],
+
   preload: function() {
     console.log('preload map1');
     game.load.image('wall-100-h', '/images/wall-100-h.jpg');
@@ -47,11 +54,11 @@ maps['map1'] = {
     game.physics.arcade.collide(player.sprite, this.walls);
     game.physics.arcade.collide(player.sprite, this.spawns);
     game.physics.arcade.collide(player.bullets, this.walls, function(bullet, wall) {
-      //bullet.kill();
+      bullet.kill();
     });
 
     game.physics.arcade.overlap(player.bullets, this.spawns, function(bullet, wall) {
-      //bullet.kill();
+      bullet.kill();
     });
 
     enemies.uuids.forEach(function(uuid, index) {

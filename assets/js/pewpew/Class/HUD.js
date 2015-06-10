@@ -12,4 +12,7 @@ function HUD() {
     $('#players .'+uuid).remove();
   };
 
+  this.updateHealth = function(health) {
+    $('#me .health .value').html(health);
+  };
 }

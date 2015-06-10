@@ -5,7 +5,8 @@ var socket = new Socket(),
     player = new Player(game),
     enemies = new Enemies(game),
     map = new Map(),
-    HUD = new HUD();
+    HUD = new HUD(),
+    bonus = new Bonus();
 
 map.load('map1');
 
@@ -22,6 +23,7 @@ function preload() {
   player.preload();
   enemies.preload();
   map.preload();
+  bonus.preload();
 }
 
 function create() {
@@ -29,6 +31,7 @@ function create() {
   socket.init(function(type) {
     player.create(type);
   });
+  bonus.create();
 
   game.physics.startSystem(Phaser.Physics.ARCADE);
   cursors = game.input.keyboard.createCursorKeys();
@@ -40,6 +43,7 @@ function update() {
     player.update(cursors);
   enemies.update();
   map.update();
+  bonus.update();
 }
 
 function rand(min, max) {

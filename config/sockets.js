@@ -131,8 +131,8 @@ module.exports.sockets = {
       if(pewpew[0]) {
         sails.sockets.broadcast(pewpew[0].roomId, 'leavePlayer', {uuid: socket.id}, socket.id);
       }
-      return cb();
     });
+    return cb();
   }
 
   /***************************************************************************

@@ -19,7 +19,7 @@ function Player(game) {
     this.sprite = game.add.sprite(this.spawnX, this.spawnY, 'player-'+type);
     this.sprite.anchor.set(0.5);
     this.sprite.health = 10;
-    $('#me .health .value').html(this.sprite.health);
+    HUD.updateHealth(this.sprite.health);
 
     game.physics.enable(this.sprite, Phaser.Physics.ARCADE);
     this.sprite.body.rotation = 0;
@@ -109,6 +109,10 @@ function Player(game) {
         bullet.reset(this.sprite.body.x+12, this.sprite.body.y+12);
         bullet.lifespan = 2000;
         bullet.rotation = this.sprite.rotation;
+
+        /*bullet.body.collideWorldBounds=true;
+        bullet.body.bounce.set(1);*/
+
         game.physics.arcade.velocityFromRotation(this.sprite.rotation, 400, bullet.body.velocity);
         this.bulletTime = game.time.now + 100;
 
@@ -120,7 +124,7 @@ function Player(game) {
   this.hit = function() {
     if(this.sprite.health > 0) {
       this.sprite.health--;
-      $('#me .health .value').html(this.sprite.health);
+      HUD.updateHealth(this.sprite.health);
       console.log("You get hit !", this.sprite.health);
     }
 

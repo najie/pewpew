@@ -56,6 +56,9 @@ function Socket() {
           enemies.destroy(datas.uuid);
       }
     });
+    io.socket.on('popBonus', function(datas) {
+      bonus.add(datas.bonus, datas.value, datas.spawn);
+    });
   };
 
   this.join = function(datas) {
