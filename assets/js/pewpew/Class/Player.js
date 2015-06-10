@@ -9,6 +9,7 @@ function Player(game) {
   this.mainDatas = {};
 
   this.preload = function() {
+    console.log(map.selectedMap.spawnsCoords, map.selectedMap.spawnsCoords.length);
     var spawnId = rand(1, map.selectedMap.spawnsCoords.length);
     this.spawnX = map.selectedMap.spawnsCoords[spawnId-1][0]+50;
     this.spawnY = map.selectedMap.spawnsCoords[spawnId-1][1]+50;

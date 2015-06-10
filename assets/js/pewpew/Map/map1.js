@@ -47,11 +47,11 @@ maps['map1'] = {
     game.physics.arcade.collide(player.sprite, this.walls);
     game.physics.arcade.collide(player.sprite, this.spawns);
     game.physics.arcade.collide(player.bullets, this.walls, function(bullet, wall) {
-      bullet.kill();
+      //bullet.kill();
     });
 
     game.physics.arcade.overlap(player.bullets, this.spawns, function(bullet, wall) {
-      bullet.kill();
+      //bullet.kill();
     });
 
     enemies.uuids.forEach(function(uuid, index) {
