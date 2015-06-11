@@ -14,11 +14,24 @@ module.exports.bootstrap = function(cb) {
   Action.destroy({roomId: 'room-1'}).exec(function(){});
   Pewpew.destroy({roomId: 'room-1'}).exec(function(){});
 
-  setInterval(function() {
-    var spawn = rand(1, 4)-1;
-    console.log("Spawn bonus to zone "+spawn);
-    sails.sockets.broadcast('room-1', 'popBonus', {bonus: 'health', value: 5, spawn: spawn});
-  }, 10000);
+  var loopServer = true;
+
+  var bonuses = [{
+    name: 'health',
+    value: 5
+  }, {
+    name: 'speed',
+    value: 5000
+  }];
+
+  if(loopServer) {
+    setInterval(function() {
+      var spawn = rand(1, 4)-1;
+      var bonus = bonuses[rand(1, bonuses.length)-1];
+      console.log("Spawn bonus ("+bonus.name+") to zone "+spawn);
+      sails.sockets.broadcast('room-1', 'popBonus', {bonus: bonus.name, value: bonus.value, spawn: spawn});
+    }, 10000);
+  }
 
   // It's very important to trigger this callback method when you are finished
   // with the bootstrap!  (otherwise your server will never lift, since it's waiting on the bootstrap)

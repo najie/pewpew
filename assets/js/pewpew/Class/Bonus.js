@@ -5,6 +5,7 @@ function Bonus() {
 
   this.preload = function () {
     game.load.image('bonus-health', '/images/bonus-health.png');
+    game.load.image('bonus-speed', '/images/bonus-speed.png');
   };
 
   this.create = function() {
@@ -20,7 +21,8 @@ function Bonus() {
       console.log(spawn, map);
       var sprite = this.sprites.create(map.selectedMap.bonusSpawns[spawn][0], map.selectedMap.bonusSpawns[spawn][1], 'bonus-'+bonus);
       sprite.spawn = spawn;
-      sprite.bonus = bonus;
+      sprite.bonusName = bonus;
+      sprite.bonusValue = value;
     }
     else {
       console.log('A bonus already here on this spawn');
@@ -30,21 +32,54 @@ function Bonus() {
 
   this.update = function () {
     var _self = this;
-    game.physics.arcade.overlap(player.sprite, this.sprites, function(player, bonus) {
-      bonus.kill();
+    game.physics.arcade.overlap(player.sprite, this.sprites, function(playerSprite, bonus) {
       console.log(bonus.spawn);
-      delete _self.bonusOnSpawn[bonus.spawn];
-      switch(bonus.bonus) {
+      _self.remove(bonus.spawn);
+      socket.directEmit({action: 'pickBonus', datas: {spawn: bonus.spawn}});
+      switch(bonus.bonusName) {
         case 'health':
-          player.health += 5;
-          HUD.updateHealth(player.health);
+          playerSprite.health += bonus.bonusValue;
+          HUD.updateHealth(playerSprite.health);
+          break;
+        case 'speed':
+          console.log("bonus speed", player);
+          if(player.stats.bonus.name) {
+            clearTimeout(player.stats.bonus.timeout);
+            _self.clear(player.stats.bonus.name);
+          }
+          console.log(player.stats);
+          player.stats.speed = 300;
+          player.stats.bulletSpeed = 800;
+          player.stats.bonus = {
+            name: 'speed',
+            timeout: setTimeout(function() {
+                _self.clear('speed');
+              },
+              bonus.bonusValue)
+          };
           break;
       }
     });
   };
 
   this.remove = function(spawn) {
-
+    this.sprites.forEach(function(sprite, index) {
+      if(sprite.spawn == spawn)
+        sprite.kill();
+    });
+    delete this.bonusOnSpawn[spawn];
   };
+
+  this.clear = function(bonusName) {
+    console.log("clear bonus");
+    switch(bonusName) {
+      case 'speed':
+        player.stats.speed = 200;
+        player.stats.bulletSpeed = 400;
+        player.stats.bonus = {name: null, timeout: null};
+        break;
+
+    }
+  }
 
 }

@@ -65,6 +65,10 @@ maps['map1'] = {
       game.physics.arcade.collide(enemies.bullets[uuid], _self.walls, function(bullet, wall) {
         bullet.kill();
       });
+
+      game.physics.arcade.collide(enemies.bullets[uuid], _self.spawns, function(bullet, spawn) {
+        bullet.kill();
+      });
     });
 
   }

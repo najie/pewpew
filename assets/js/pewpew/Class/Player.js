@@ -1,5 +1,19 @@
 function Player(game) {
 
+  this.state = {
+    fire: false
+  };
+
+  this.stats = {
+    speed: 200,
+    angularVelocity: 400,
+    bulletSpeed: 400,
+    bonus: {
+      name: null,
+      timeout: null
+    }
+  };
+
   this.cursors = null;
   this.sprite = {};
 
@@ -37,9 +51,8 @@ function Player(game) {
   };
 
   this.update = function(cursors) {
-    var speed = 200,
-        angularVelocity = 300,
-        doEmit = false,
+    var speed = this.stats.speed,
+        angularVelocity = this.stats.speed,
         action = null,
         _self = this;
 
@@ -49,7 +62,8 @@ function Player(game) {
         y: this.sprite.y
       },
       rotation: this.sprite.angle,
-      health: this.sprite.health
+      health: this.sprite.health,
+      bonus: this.stats.bonus.name
     };
 
     this.sprite.body.velocity.x = 0;
@@ -83,6 +97,16 @@ function Player(game) {
 
     if (game.input.keyboard.isDown(Phaser.Keyboard.SPACEBAR) && this.sprite.health > 0) {
       this.fire();
+      if(!this.state.fire) {
+        socket.directEmit({action: 'fire'});
+        this.state.fire = true;
+      }
+    }
+    else {
+      if(this.state.fire) {
+        socket.directEmit({action: 'stopFire'});
+        this.state.fire = false;
+      }
     }
 
     enemies.uuids.forEach(function(uuid, index) {
@@ -113,10 +137,8 @@ function Player(game) {
         /*bullet.body.collideWorldBounds=true;
         bullet.body.bounce.set(1);*/
 
-        game.physics.arcade.velocityFromRotation(this.sprite.rotation, 400, bullet.body.velocity);
+        game.physics.arcade.velocityFromRotation(this.sprite.rotation, this.stats.bulletSpeed, bullet.body.velocity);
         this.bulletTime = game.time.now + 100;
-
-        socket.emit({datas: this.mainDatas, action: 'fire'});
       }
     }
   };

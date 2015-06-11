@@ -102,14 +102,26 @@ module.exports = {
         uuid = req.param('uuid');
 
     if(req.isSocket) {
-      this.actions.push({id: req.socket.id});
       switch(action) {
         case 'move':
-        case 'fire':
           sails.sockets.broadcast(this.defaultRoom, 'updatePlayer', {
             pInfos: datas,
             uuid: req.socket.id,
             action: action
+          }, req.socket);
+          break;
+        case 'fire':
+        case 'stopFire':
+          sails.sockets.broadcast(this.defaultRoom, 'updatePlayer', {
+            uuid: req.socket.id,
+            action: action
+          }, req.socket);
+          break;
+        case 'pickBonus':
+          sails.sockets.broadcast(this.defaultRoom, 'updatePlayer', {
+            uuid: req.socket.id,
+            action: action,
+            spawn: datas.spawn
           }, req.socket);
           break;
         case 'hit':

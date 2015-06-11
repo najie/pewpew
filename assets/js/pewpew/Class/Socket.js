@@ -33,17 +33,18 @@ function Socket() {
             uuid: datas.uuid,
             pos:{x: datas.pInfos.pos.x, y: datas.pInfos.pos.y},
             rotation: datas.pInfos.rotation,
-            health: datas.pInfos.health
+            health: datas.pInfos.health,
+            bonus: datas.pInfos.bonus
           });
           break;
         case 'fire':
-          enemies.move({
-            uuid: datas.uuid,
-            pos:{x: datas.pInfos.pos.x, y: datas.pInfos.pos.y},
-            rotation: datas.pInfos.rotation
-          });
-          enemies.fire(datas.uuid);
+          enemies.fire(datas.uuid, datas.bonus);
           break;
+        case 'stopFire':
+          enemies.stopFire(datas.uuid);
+          break;
+        case 'pickBonus':
+          bonus.remove(datas.spawn);
         case 'hit':
           if(datas.pInfos.target !== uuid)
             enemies.hit(datas.target);
@@ -80,10 +81,12 @@ function Socket() {
     datas.uuid = uuid;
     if(Date.now() - this.lastUpdate > latency) {
       this.lastUpdate = Date.now();
-      io.socket.post(apiUrl+"/pewpew/updatePlayer", datas, function(response) {
-
-      });
+      io.socket.post(apiUrl+"/pewpew/updatePlayer", datas, function(response) {});
     }
   };
+
+  this.directEmit = function(datas) {
+    io.socket.post(apiUrl+"/pewpew/updatePlayer", datas, function(response) {});
+  }
 
 }

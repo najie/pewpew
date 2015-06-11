@@ -1,5 +1,7 @@
 function Enemies(game) {
+  this.states = [];
 
+  this.bonuses = [];
   this.sprites = [];
   this.uuids = [];
   this.bullets = [];
@@ -28,6 +30,11 @@ function Enemies(game) {
     bullets.setAll('anchor.y', 0.5);
     this.bullets[uuid] = bullets;
 
+    this.states.push({
+      uuid: uuid,
+      fire: false
+    });
+
     HUD.addPlayer(uuid, type);
   };
 
@@ -42,6 +49,13 @@ function Enemies(game) {
   };
 
   this.update = function() {
+    var _self = this;
+
+    this.states.forEach(function(state, index) {
+      if(state.fire) {
+        _self._fire(state.uuid);
+      }
+    });
   };
 
   this.move = function(datas) {
@@ -51,10 +65,27 @@ function Enemies(game) {
       this.sprites[datas.uuid].x = datas.pos.x;
       this.sprites[datas.uuid].y = datas.pos.y;
       this.sprites[datas.uuid].angle = datas.rotation;
+      this.bonuses[datas.uuid] = datas.bonus;
     }
   };
 
   this.fire = function(uuid) {
+    this.states.forEach(function(state, index) {
+      if(state.uuid == uuid) {
+        state.fire = true;
+      }
+    });
+  };
+
+  this.stopFire = function(uuid) {
+    this.states.forEach(function(state, index) {
+      if(state.uuid == uuid) {
+        state.fire = false;
+      }
+    });
+  };
+
+  this._fire = function(uuid) {
     if (game.time.now > this.bulletTime) {
       var bullet = this.bullets[uuid].getFirstExists(false),
           bulletLifespan = 2000,
@@ -64,7 +95,12 @@ function Enemies(game) {
         bullet.reset(this.sprites[uuid].body.x + 12, this.sprites[uuid].body.y + 12);
         bullet.lifespan = bulletLifespan;
         bullet.rotation = this.sprites[uuid].rotation;
-        game.physics.arcade.velocityFromRotation(this.sprites[uuid].rotation, 400, bullet.body.velocity);
+
+        var bulletVelocity = 400;
+        if(this.bonuses[uuid] == 'speed')
+          bulletVelocity = 800;
+
+        game.physics.arcade.velocityFromRotation(this.sprites[uuid].rotation, bulletVelocity, bullet.body.velocity);
         this.bulletTime = game.time.now + 100;
       }
     }
@@ -72,9 +108,5 @@ function Enemies(game) {
 
   this.hit = function(target) {
     this.sprites[target].health--;
-  };
-
-  this.updateHUD = function(datas) {
-
   };
 }
