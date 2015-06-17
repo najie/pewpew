@@ -52,7 +52,7 @@ function Player(game) {
 
   this.update = function(cursors) {
     var speed = this.stats.speed,
-        angularVelocity = this.stats.speed,
+        angularVelocity = this.stats.angularVelocity,
         action = null,
         _self = this;
 
