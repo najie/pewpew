@@ -6,18 +6,19 @@ function Player(game) {
 
   this.stats = {
     speed: 200,
-    angularVelocity: 400,
-    bulletSpeed: 400,
+    angularVelocity: 300,
+    bulletSpeed: 500,
     bonus: {
       name: null,
       timeout: null
-    }
+    },
+    disableFire: true
   };
 
   this.cursors = null;
   this.sprite = {};
 
-  this.bullets = null;
+  this.bullets = [];
   this.bulletTime = 0;
 
   this.mainDatas = {};
@@ -95,16 +96,16 @@ function Player(game) {
       this.sprite.body.angularVelocity = angularVelocity;
     }
 
-    if (game.input.keyboard.isDown(Phaser.Keyboard.SPACEBAR) && this.sprite.health > 0) {
+    if (game.input.keyboard.isDown(Phaser.Keyboard.SPACEBAR) && this.sprite.health > 0 && !this.stats.disableFire) {
       this.fire();
       if(!this.state.fire) {
-        socket.directEmit({action: 'fire'});
+        socket.directEmit({action: 'fire', datas: this.mainDatas});
         this.state.fire = true;
       }
     }
     else {
       if(this.state.fire) {
-        socket.directEmit({action: 'stopFire'});
+        socket.directEmit({action: 'stopFire', datas: this.mainDatas});
         this.state.fire = false;
       }
     }
@@ -134,8 +135,13 @@ function Player(game) {
         bullet.lifespan = 2000;
         bullet.rotation = this.sprite.rotation;
 
-        /*bullet.body.collideWorldBounds=true;
-        bullet.body.bounce.set(1);*/
+        if(this.stats.bonus.name == 'bulletBounce') {
+          bullet.body.collideWorldBounds = true;
+          bullet.body.bounce.set(1);
+        }
+        else {
+          bullet.body.collideWorldBounds = false;
+        }
 
         game.physics.arcade.velocityFromRotation(this.sprite.rotation, this.stats.bulletSpeed, bullet.body.velocity);
         this.bulletTime = game.time.now + 100;
@@ -146,7 +152,7 @@ function Player(game) {
   this.hit = function() {
     if(this.sprite.health > 0) {
       this.sprite.health--;
-      HUD.updateHealth(this.sprite.health);
+      HUD.hit(this.sprite.health);
       console.log("You get hit !", this.sprite.health);
     }
 

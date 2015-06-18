@@ -58,14 +58,14 @@ function Enemies(game) {
     });
   };
 
-  this.move = function(datas) {
-    console.log("Enemy datas", datas.pos.y);
-    if(this.sprites[datas.uuid]) {
-      console.log("Enemy found... update", datas);
-      this.sprites[datas.uuid].x = datas.pos.x;
-      this.sprites[datas.uuid].y = datas.pos.y;
-      this.sprites[datas.uuid].angle = datas.rotation;
-      this.bonuses[datas.uuid] = datas.bonus;
+  this.move = function(uuid, pInfos) {
+    console.log("Enemy datas", pInfos.pos.y);
+    if(this.sprites[uuid]) {
+      console.log("Enemy found... update", pInfos);
+      this.sprites[uuid].x = pInfos.pos.x;
+      this.sprites[uuid].y = pInfos.pos.y;
+      this.sprites[uuid].angle = pInfos.rotation;
+      this.bonuses[uuid] = pInfos.bonus;
     }
   };
 
@@ -99,6 +99,14 @@ function Enemies(game) {
         var bulletVelocity = 400;
         if(this.bonuses[uuid] == 'speed')
           bulletVelocity = 800;
+
+        if(this.bonuses[uuid] == 'bulletBounce') {
+          bullet.body.collideWorldBounds = true;
+          bullet.body.bounce.set(1);
+        }
+        else {
+          bullet.body.collideWorldBounds = false;
+        }
 
         game.physics.arcade.velocityFromRotation(this.sprites[uuid].rotation, bulletVelocity, bullet.body.velocity);
         this.bulletTime = game.time.now + 100;

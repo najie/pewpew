@@ -7,9 +7,10 @@ maps['map1'] = {
     [600,50], [650, 250], [50,150]
   ],
   bonusSpawns: [
-    [280, 193],
-    [440, 193],
     [90, 30],
+    [90, 340],
+    [280, 193],
+    [460, 193],
     [760, 360]
   ],
 
@@ -32,13 +33,14 @@ maps['map1'] = {
     walls.create(200,0, 'wall-100-v');
     walls.create(200, 300, 'wall-100-v');
 
-    walls.create(250, 150, 'wall-100-v');
+    // Middle Left
+    //walls.create(250, 150, 'wall-100-v');
     walls.create(250, 150, 'wall-100-h');
     walls.create(250, 250, 'wall-100-h');
-
-    walls.create(490, 150, 'wall-100-v');
-    walls.create(400, 150, 'wall-100-h');
-    walls.create(400, 250, 'wall-100-h');
+    // Middle Right
+    //walls.create(510, 150, 'wall-100-v');
+    walls.create(420, 150, 'wall-100-h');
+    walls.create(420, 250, 'wall-100-h');
 
     spawns.create(this.spawnsCoords[0][0], this.spawnsCoords[0][1], 'spawn-100');
     spawns.create(this.spawnsCoords[1][0], this.spawnsCoords[1][1], 'spawn-100');
@@ -53,21 +55,31 @@ maps['map1'] = {
     var _self = this;
     game.physics.arcade.collide(player.sprite, this.walls);
     game.physics.arcade.collide(player.sprite, this.spawns);
-    game.physics.arcade.collide(player.bullets, this.walls, function(bullet, wall) {
-      bullet.kill();
+
+    player.stats.disableFire = false;
+    game.physics.arcade.overlap(player.sprite, this.spawns, function(bullet, wall) {
+      player.stats.disableFire = true;
     });
 
-    game.physics.arcade.overlap(player.bullets, this.spawns, function(bullet, wall) {
-      bullet.kill();
+    game.physics.arcade.collide(player.bullets, this.walls, function(bullet, wall) {
+      if(player.stats.bonus.name !== 'bulletBounce')
+        bullet.kill();
+    });
+
+    game.physics.arcade.collide(player.bullets, this.spawns, function(bullet, wall) {
+      if(player.stats.bonus.name !== 'bulletBounce')
+        bullet.kill();
     });
 
     enemies.uuids.forEach(function(uuid, index) {
       game.physics.arcade.collide(enemies.bullets[uuid], _self.walls, function(bullet, wall) {
-        bullet.kill();
+        if(enemies.bonuses[uuid] !== 'bulletBounce')
+          bullet.kill();
       });
 
       game.physics.arcade.collide(enemies.bullets[uuid], _self.spawns, function(bullet, spawn) {
-        bullet.kill();
+        if(enemies.bonuses[uuid] !== 'bulletBounce')
+          bullet.kill();
       });
     });
 

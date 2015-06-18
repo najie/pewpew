@@ -16,21 +16,25 @@ module.exports.bootstrap = function(cb) {
 
   var loopServer = true;
 
+  var nbSpawn = 5;
   var bonuses = [{
     name: 'health',
     value: 5
   }, {
     name: 'speed',
+    value: 20000
+  }, {
+    name: 'bulletBounce',
     value: 5000
   }];
 
   if(loopServer) {
     setInterval(function() {
-      var spawn = rand(1, 4)-1;
+      var spawn = rand(1, nbSpawn)-1;
       var bonus = bonuses[rand(1, bonuses.length)-1];
       console.log("Spawn bonus ("+bonus.name+") to zone "+spawn);
       sails.sockets.broadcast('room-1', 'popBonus', {bonus: bonus.name, value: bonus.value, spawn: spawn});
-    }, 10000);
+    }, 1000);
   }
 
   // It's very important to trigger this callback method when you are finished

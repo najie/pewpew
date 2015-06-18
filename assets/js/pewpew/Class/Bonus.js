@@ -6,6 +6,7 @@ function Bonus() {
   this.preload = function () {
     game.load.image('bonus-health', '/images/bonus-health.png');
     game.load.image('bonus-speed', '/images/bonus-speed.png');
+    game.load.image('bonus-bulletBounce', '/images/bonus-bulletBounce.png');
   };
 
   this.create = function() {
@@ -48,12 +49,21 @@ function Bonus() {
             _self.clear(player.stats.bonus.name);
           }
           console.log(player.stats);
-          player.stats.speed = 300;
-          player.stats.bulletSpeed = 800;
+          player.stats.speed = 280;
+          player.stats.bulletSpeed = 1000;
           player.stats.bonus = {
             name: 'speed',
             timeout: setTimeout(function() {
                 _self.clear('speed');
+              },
+              bonus.bonusValue)
+          };
+          break;
+        case 'bulletBounce':
+          player.stats.bonus = {
+            name: 'bulletBounce',
+            timeout: setTimeout(function() {
+                _self.clear('bulletBounce');
               },
               bonus.bonusValue)
           };
@@ -71,14 +81,16 @@ function Bonus() {
   };
 
   this.clear = function(bonusName) {
-    console.log("clear bonus");
+    console.log("clear bonus "+bonusName);
     switch(bonusName) {
       case 'speed':
         player.stats.speed = 200;
         player.stats.bulletSpeed = 400;
         player.stats.bonus = {name: null, timeout: null};
         break;
-
+      case 'bulletBounce':
+        player.stats.bonus = {name: null, timeout: null};
+        break;
     }
   }
 

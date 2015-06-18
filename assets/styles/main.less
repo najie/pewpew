@@ -22,6 +22,26 @@ li, ul {
     background-color: #607D8B;
     color: white;
     width: 200px;
+    &.hit {
+      animation: hit 500ms;
+      -webkit-animation: hit 500ms;
+      @keyframes hit {
+        from {
+          background-color: red;
+        }
+        to {
+          background-color: #607D8B;
+        }
+      }
+      @-webkit-keyframes hit {
+        from {
+          background-color: red;
+        }
+        to {
+          background-color: #607D8B;
+        }
+      }
+    }
   }
   #players {
     padding: 10px;

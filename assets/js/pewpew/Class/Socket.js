@@ -29,18 +29,14 @@ function Socket() {
       }
       switch(datas.action) {
         case 'move':
-          enemies.move({
-            uuid: datas.uuid,
-            pos:{x: datas.pInfos.pos.x, y: datas.pInfos.pos.y},
-            rotation: datas.pInfos.rotation,
-            health: datas.pInfos.health,
-            bonus: datas.pInfos.bonus
-          });
+          enemies.move(datas.uuid, datas.pInfos);
           break;
         case 'fire':
+          enemies.move(datas.uuid, datas.pInfos);
           enemies.fire(datas.uuid, datas.bonus);
           break;
         case 'stopFire':
+          enemies.move(datas.uuid, datas.pInfos);
           enemies.stopFire(datas.uuid);
           break;
         case 'pickBonus':

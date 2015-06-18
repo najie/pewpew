@@ -104,15 +104,10 @@ module.exports = {
     if(req.isSocket) {
       switch(action) {
         case 'move':
-          sails.sockets.broadcast(this.defaultRoom, 'updatePlayer', {
-            pInfos: datas,
-            uuid: req.socket.id,
-            action: action
-          }, req.socket);
-          break;
         case 'fire':
         case 'stopFire':
           sails.sockets.broadcast(this.defaultRoom, 'updatePlayer', {
+            pInfos: datas,
             uuid: req.socket.id,
             action: action
           }, req.socket);

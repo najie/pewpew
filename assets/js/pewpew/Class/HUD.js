@@ -15,4 +15,12 @@ function HUD() {
   this.updateHealth = function(health) {
     $('#me .health .value').html(health);
   };
+
+  this.hit = function(health) {
+    this.updateHealth(health);
+    jQuery("#me").addClass('hit');
+    setTimeout(function() {
+      jQuery("#me").removeClass('hit');
+    }, 500);
+  }
 }
